@@ -24,7 +24,7 @@ find_package(g2o REQUIRED
              g2o::csparse)
 
 # gtsam
-set(USE_GTSAM ON CACHE BOOL "Enable gtsam")
+set(USE_GTSAM OFF CACHE BOOL "Enable gtsam")
 unset(GTSAM_INCLUDE_DIRS CACHE)
 find_path(GTSAM_INCLUDE_DIRS NAMES gtsam
           PATHS /usr/local/include/)
@@ -98,7 +98,7 @@ if (USE_GTSAM)
 endif()
 
 # OpenMP
-set(USE_OPENMP OFF CACHE BOOL "Use OpenMP")
+set(USE_OPENMP ON CACHE BOOL "Use OpenMP")
 if(USE_OPENMP)
     target_compile_options(${PROJECT_NAME} PRIVATE ${OpenMP_CXX_FLAGS})
     target_compile_definitions(${PROJECT_NAME} PUBLIC USE_OPENMP)

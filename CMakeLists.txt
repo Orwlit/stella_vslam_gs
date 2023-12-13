@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(stella_vslam LANGUAGES CXX C)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(POLICY CMP0042)
@@ -14,7 +14,7 @@ if(POLICY CMP0074)
     cmake_policy(SET CMP0074 OLD)
 endif()
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+# list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 # ----- Set build type -----
 
@@ -27,6 +27,13 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 option(BUILD_SHARED_LIBS "Build stella_vslam as a shared library" ON)
 
 # ----- Build selection -----
+
+set(USE_OPENCL OFF CACHE BOOL "Enable GPU acceleration using OpenCL")
+set(USE_PANGOLIN_VIEWER ON CACHE BOOL "Enable Pangolin Viewer")
+set(INSTALL_PANGOLIN_VIEWER OFF CACHE BOOL "Install PangolinViewer library")
+set(USE_SOCKET_PUBLISHER OFF CACHE BOOL "Enable Socket Publisher")
+set(INSTALL_SOCKET_PUBLISHER OFF CACHE BOOL "Install SocketPublisher library")
+set(BUILD_EXAMPLES ON CACHE BOOL "Build examples")
 
 set(BUILD_TESTS OFF CACHE BOOL "Build tests")
 set(BOW_FRAMEWORK "FBoW" CACHE STRING "DBoW2 or FBoW")
@@ -138,42 +145,51 @@ else()
   include_directories(${spdlog_INCLUDE_DIR})
 endif()
 
-# ----- Install configuration -----
 
-include(CMakePackageConfigHelpers)
 
-# Generate cmake configuration scripts
-set(STELLA_VSLAM_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
-set(STELLA_VSLAM_VERSION_CONFIG ${STELLA_VSLAM_GENERATED_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
-set(STELLA_VSLAM_PROJECT_CONFIG ${STELLA_VSLAM_GENERATED_DIR}/${PROJECT_NAME}Config.cmake)
-set(STELLA_VSLAM_TARGETS_EXPORT_NAME ${PROJECT_NAME}Targets)
-set(STELLA_VSLAM_CONFIG_INSTALL_DIR lib/cmake/${PROJECT_NAME})
-set(STELLA_VSLAM_NAMESPACE "${PROJECT_NAME}::")
-set(STELLA_VSLAM_VERSION 0.4.0)
+# ##########################################################
+# # ----- Install configuration -----
 
-# Create a version config file
-write_basic_package_version_file(${STELLA_VSLAM_VERSION_CONFIG}
-                                 VERSION ${STELLA_VSLAM_VERSION}
-                                 COMPATIBILITY SameMajorVersion)
-# Create a project config file
-configure_file(${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in ${STELLA_VSLAM_PROJECT_CONFIG} @ONLY)
+# include(CMakePackageConfigHelpers)
 
-# Install to the specified directory
-install(FILES ${STELLA_VSLAM_VERSION_CONFIG} ${STELLA_VSLAM_PROJECT_CONFIG}
-        DESTINATION ${STELLA_VSLAM_CONFIG_INSTALL_DIR})
-install(EXPORT ${STELLA_VSLAM_TARGETS_EXPORT_NAME}
-        NAMESPACE ${STELLA_VSLAM_NAMESPACE}
-        DESTINATION ${STELLA_VSLAM_CONFIG_INSTALL_DIR})
+# # Generate cmake configuration scripts
+# set(STELLA_VSLAM_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
+# set(STELLA_VSLAM_VERSION_CONFIG ${STELLA_VSLAM_GENERATED_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
+# set(STELLA_VSLAM_PROJECT_CONFIG ${STELLA_VSLAM_GENERATED_DIR}/${PROJECT_NAME}Config.cmake)
+# set(STELLA_VSLAM_TARGETS_EXPORT_NAME ${PROJECT_NAME}Targets)
+# set(STELLA_VSLAM_CONFIG_INSTALL_DIR lib/cmake/${PROJECT_NAME})
+# set(STELLA_VSLAM_NAMESPACE "${PROJECT_NAME}::")
+# set(STELLA_VSLAM_VERSION 0.4.0)
 
-# Set standard installation directories
-set(RUNTIME_DESTINATION bin)
-set(LIBRARY_DESTINATION lib)
-set(ARCHIVE_DESTINATION lib)
-set(INCLUDES_DESTINATION include)
+# # Create a version config file
+# write_basic_package_version_file(${STELLA_VSLAM_VERSION_CONFIG}
+#                                  VERSION ${STELLA_VSLAM_VERSION}
+#                                  COMPATIBILITY SameMajorVersion)
+# # Create a project config file
+# configure_file(${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in ${STELLA_VSLAM_PROJECT_CONFIG} @ONLY)
+
+# # Install to the specified directory
+# install(FILES ${STELLA_VSLAM_VERSION_CONFIG} ${STELLA_VSLAM_PROJECT_CONFIG}
+#         DESTINATION ${STELLA_VSLAM_CONFIG_INSTALL_DIR})
+# install(EXPORT ${STELLA_VSLAM_TARGETS_EXPORT_NAME}
+#         NAMESPACE ${STELLA_VSLAM_NAMESPACE}
+#         DESTINATION ${STELLA_VSLAM_CONFIG_INSTALL_DIR})
+
+# # Set standard installation directories
+# set(RUNTIME_DESTINATION bin)
+# set(LIBRARY_DESTINATION lib)
+# set(ARCHIVE_DESTINATION lib)
+# set(INCLUDES_DESTINATION include)
+# ##########################################################
+
 
 # ----- Build -----
 
 add_subdirectory(src)
+
+if(BUILD_EXAMPLES)
+    add_subdirectory(example)
+endif()
 
 if(BUILD_TESTS)
     enable_testing()

@@ -1,0 +1,134 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "run_video_slam (gdb)",
+            "type": "cppdbg",
+            "request": "launch",
+            "environment": [],
+            "program": "${workspaceFolder}/build/run_video_slam",
+            "args": [
+                // Dataset selection
+                "--video",  
+                // "~/Dataset/stella_vslam_dataset/aist_living_lab_1/video.mp4",
+                "~/Dataset/stella_vslam_dataset/aist_living_lab_2/video.mp4",
+
+                // Config
+                "--config", 
+                "${workspaceFolder}/config/aist/equirectangular.yaml",
+                // "${workspaceFolder}/config/aist/fisheye.yaml",
+
+                // SLAM mode
+                "--map-db-out", "${workspaceFolder}/maps/map.msg",
+
+                // Localization mode
+                // "--map-db-in", "${workspaceFolder}/maps/map.msg",
+                // "--disable-mapping",
+
+                // Log config: "trace", "debug", "info", "warning", "error", "critical", "off"    
+                "--log-level", "debug",
+
+                "--vocab",  "${workspaceFolder}/vocab/FBoW_orb_vocab/orb_vocab.fbow",
+                // "--mask",
+                
+                // "--viewer", "pangolin_viewer",
+                // "--frame-skip", "3",
+                // "--no-sleep",
+                // "--wait-loop-ba",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "将反汇编风格设置为 Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "run_tum_rgbd_slam (gdb)",
+            "type": "cppdbg",
+            "request": "launch",
+            "environment": [],
+            "program": "${workspaceFolder}/src/stella_vslam_examples/build/run_tum_rgbd_slam",
+            "args": [
+                // Dataset selection
+                "--data-dir",  
+                "~/Dataset/TUM/rgbd_dataset_freiburg1_xyz",
+
+                // Config
+                "--config", 
+                "${workspaceFolder}/example/tum_rgbd/TUM_RGBD_rgbd_1.yaml",
+
+                // SLAM mode
+                "--map-db-out", "${workspaceFolder}/maps/map.msg",
+
+                // Localization mode
+                // "--map-db-in", "${workspaceFolder}/maps/map.msg",
+                // "--disable-mapping",
+
+                // Log config: "trace", "debug", "info", "warning", "error", "critical", "off"    
+                "--log-level", "debug",
+
+                "--vocab",  "${workspaceFolder}/vocab/FBoW_orb_vocab/orb_vocab.fbow",
+                
+                "--viewer", "pangolin_viewer",
+                // "--frame-skip", "3",
+                // "--no-sleep",
+                // "--wait-loop-ba",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "将反汇编风格设置为 Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "C/C++: g++ 生成和调试活动文件",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "将反汇编风格设置为 Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "C/C++: g++ 生成活动文件",
+            "miDebuggerPath": "/usr/bin/gdb"
+        }
+    ]
+}

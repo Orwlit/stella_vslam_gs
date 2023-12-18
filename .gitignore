@@ -9,6 +9,7 @@ cmake-build-release/
 */.python-version
 *.user
 *~
+maps/**
 
 # Prerequisites
 *.d
@@ -45,3 +46,4 @@ cmake-build-release/
 
 # vcpkg
 /3rd/vcpkg/
+/3rd/FBoW/

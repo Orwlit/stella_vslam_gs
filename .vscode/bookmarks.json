@@ -1,0 +1,14 @@
+{
+	"files": [
+		{
+			"path": "src/stella_vslam/system.cc",
+			"bookmarks": [
+				{
+					"line": 375,
+					"column": 33,
+					"label": "创建RGBD帧"
+				}
+			]
+		}
+	]
+}

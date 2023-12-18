@@ -116,7 +116,7 @@ unsigned int pose_optimizer_gtsam::optimize(const Mat44_t& cam_pose_cw, const da
                     using monocular_calibration_type = internal_gtsam::SphericalCameraCalibration;
                     using monocular_factor_type = internal_gtsam::PoseOptFactor<gtsam::Pose3, gtsam::Point3,
                                                                                 monocular_calibration_type, internal_gtsam::SphericalCamera<monocular_calibration_type>>;
-                    boost::shared_ptr<monocular_calibration_type> monocular_calibration(new monocular_calibration_type(cam->rows_, cam->cols_));
+                    std::shared_ptr<monocular_calibration_type> monocular_calibration(new monocular_calibration_type(cam->rows_, cam->cols_));
                     graph.emplace_shared<monocular_factor_type>(
                         lm->get_pos_in_world(), idx, measurement, huber_noise_model, gtsam::Symbol('x', 0), monocular_calibration);
                     break;
@@ -171,7 +171,7 @@ unsigned int pose_optimizer_gtsam::optimize(const Mat44_t& cam_pose_cw, const da
 
     unsigned int num_bad_obs = 0;
     if (enable_outlier_elimination_) {
-        std::vector<boost::shared_ptr<internal_gtsam::PoseOptFactorBase<gtsam::Pose3, gtsam::Point3>>> outlier_factors(num_keypts, nullptr);
+        std::vector<std::shared_ptr<internal_gtsam::PoseOptFactorBase<gtsam::Pose3, gtsam::Point3>>> outlier_factors(num_keypts, nullptr);
         const unsigned int num_trials = 2;
         for (unsigned int trial = 0; trial < num_trials; ++trial) {
             gtsam::LevenbergMarquardtOptimizer optimizer(graph, values, lm_params);
@@ -179,7 +179,7 @@ unsigned int pose_optimizer_gtsam::optimize(const Mat44_t& cam_pose_cw, const da
 
             for (size_t i = 0; i < graph.size(); ++i) {
                 const auto& nonlinear_factor = graph.at(i);
-                const auto& factor = (outlier_factors.at(i) == nullptr) ? boost::dynamic_pointer_cast<internal_gtsam::PoseOptFactorBase<gtsam::Pose3, gtsam::Point3>>(nonlinear_factor)
+                const auto& factor = (outlier_factors.at(i) == nullptr) ? std::dynamic_pointer_cast<internal_gtsam::PoseOptFactorBase<gtsam::Pose3, gtsam::Point3>>(nonlinear_factor)
                                                                         : outlier_factors.at(i);
                 // filter reprojection edge
                 if (factor == nullptr) {
@@ -211,7 +211,7 @@ unsigned int pose_optimizer_gtsam::optimize(const Mat44_t& cam_pose_cw, const da
                 if (trial == 0) {
                     if (graph[i]) {
                         graph.remove(i);
-                        graph[i] = factor->cloneWithNewNoiseModel(boost::dynamic_pointer_cast<gtsam::noiseModel::Robust>(factor->noiseModel())->noise());
+                        graph[i] = factor->cloneWithNewNoiseModel(std::dynamic_pointer_cast<gtsam::noiseModel::Robust>(factor->noiseModel())->noise());
                     }
                 }
             }

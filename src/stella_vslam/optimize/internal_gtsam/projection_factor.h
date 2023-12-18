@@ -38,16 +38,16 @@ private:
 
 protected:
     gtsam::Point2 measurement_;
-    boost::shared_ptr<CALIBRATION> calibration_;
+    std::shared_ptr<CALIBRATION> calibration_;
 
 public:
     ProjectionFactor(const gtsam::Point2& measurement, const gtsam::SharedNoiseModel& model,
-                     gtsam::Key key_pose, gtsam::Key key_landmark, const boost::shared_ptr<CALIBRATION>& calibration)
+                     gtsam::Key key_pose, gtsam::Key key_landmark, const std::shared_ptr<CALIBRATION>& calibration)
         : Base(model, key_pose, key_landmark), measurement_(measurement), calibration_(calibration) {}
     virtual ~ProjectionFactor() {}
 
     gtsam::Vector evaluateError(const POSE& pose, const LANDMARK& point,
-                                boost::optional<gtsam::Matrix&> H1 = boost::none, boost::optional<gtsam::Matrix&> H2 = boost::none) const override {
+                                std::optional<gtsam::Matrix&> H1 = std::none, std::optional<gtsam::Matrix&> H2 = std::none) const override {
         try {
             CAMERA camera(pose, calibration_);
             return camera.project(point, H1, H2) - measurement_;
@@ -65,7 +65,7 @@ public:
     }
 
     gtsam::NonlinearFactor::shared_ptr clone() const override {
-        return boost::static_pointer_cast<gtsam::NonlinearFactor>(
+        return std::static_pointer_cast<gtsam::NonlinearFactor>(
             gtsam::NonlinearFactor::shared_ptr(new This(*this)));
     }
 
@@ -87,7 +87,7 @@ private:
     typedef gtsam::PinholeCamera<CALIBRATION> Base;
 
 public:
-    PinholeCamera(const gtsam::Pose3& pose, const boost::shared_ptr<CALIBRATION>& calibration)
+    PinholeCamera(const gtsam::Pose3& pose, const std::shared_ptr<CALIBRATION>& calibration)
         : Base(pose, *calibration) {}
     virtual ~PinholeCamera() {}
 };
@@ -106,14 +106,14 @@ template<class CALIBRATION>
 class SphericalCamera {
 protected:
     gtsam::Pose3 pose_;
-    boost::shared_ptr<CALIBRATION> calibration_;
+    std::shared_ptr<CALIBRATION> calibration_;
 
 public:
-    SphericalCamera(const gtsam::Pose3& pose, const boost::shared_ptr<CALIBRATION>& calibration)
+    SphericalCamera(const gtsam::Pose3& pose, const std::shared_ptr<CALIBRATION>& calibration)
         : pose_(pose), calibration_(calibration) {}
     virtual ~SphericalCamera() {}
 
-    gtsam::Point2 project(const gtsam::Point3& point, gtsam::OptionalJacobian<2, 6> Dpose = boost::none, gtsam::OptionalJacobian<2, 3> Dpoint = boost::none) const {
+    gtsam::Point2 project(const gtsam::Point3& point, gtsam::OptionalJacobian<2, 6> Dpose = std::none, gtsam::OptionalJacobian<2, 3> Dpoint = std::none) const {
         const unsigned int cols = calibration_->cols_;
         const unsigned int rows = calibration_->rows_;
         const gtsam::Point3 pos_c = pose_.transformTo(point);
@@ -216,16 +216,16 @@ private:
 
 protected:
     gtsam::StereoPoint2 measurement_;
-    boost::shared_ptr<CALIBRATION> calibration_;
+    std::shared_ptr<CALIBRATION> calibration_;
 
 public:
     StereoProjectionFactor(const gtsam::StereoPoint2& measurement, const gtsam::SharedNoiseModel& model,
-                           gtsam::Key key_pose, gtsam::Key key_landmark, const boost::shared_ptr<CALIBRATION>& calibration)
+                           gtsam::Key key_pose, gtsam::Key key_landmark, const std::shared_ptr<CALIBRATION>& calibration)
         : Base(model, key_pose, key_landmark), measurement_(measurement), calibration_(calibration) {}
     virtual ~StereoProjectionFactor() {}
 
     gtsam::Vector evaluateError(const POSE& pose, const LANDMARK& point,
-                                boost::optional<gtsam::Matrix&> H1 = boost::none, boost::optional<gtsam::Matrix&> H2 = boost::none) const override {
+                                std::optional<gtsam::Matrix&> H1 = std::none, std::optional<gtsam::Matrix&> H2 = std::none) const override {
         try {
             STEREO_CAMERA camera(pose, calibration_);
             return (camera.project(point, H1, H2) - measurement_).vector();
@@ -243,7 +243,7 @@ public:
     }
 
     gtsam::NonlinearFactor::shared_ptr clone() const override {
-        return boost::static_pointer_cast<gtsam::NonlinearFactor>(
+        return std::static_pointer_cast<gtsam::NonlinearFactor>(
             gtsam::NonlinearFactor::shared_ptr(new This(*this)));
     }
 
@@ -292,16 +292,16 @@ private:
 
 protected:
     gtsam::Point2 measurement_;
-    boost::shared_ptr<CALIBRATION> calibration_;
+    std::shared_ptr<CALIBRATION> calibration_;
 
 public:
     PoseOptFactor(const LANDMARK& point, unsigned int idx, const gtsam::Point2& measurement, const gtsam::SharedNoiseModel& model,
-                  gtsam::Key key_pose, const boost::shared_ptr<CALIBRATION>& calibration)
+                  gtsam::Key key_pose, const std::shared_ptr<CALIBRATION>& calibration)
         : Base(point, idx, model, key_pose), measurement_(measurement), calibration_(calibration) {}
     virtual ~PoseOptFactor() {}
 
     gtsam::Vector evaluateError(const gtsam::Pose3& pose,
-                                boost::optional<gtsam::Matrix&> H1 = boost::none) const override {
+                                std::optional<gtsam::Matrix&> H1 = std::none) const override {
         try {
             CAMERA camera(pose, calibration_);
             return camera.project(this->point_, H1) - measurement_;
@@ -317,7 +317,7 @@ public:
     }
 
     gtsam::NonlinearFactor::shared_ptr clone() const override {
-        return boost::static_pointer_cast<gtsam::NonlinearFactor>(
+        return std::static_pointer_cast<gtsam::NonlinearFactor>(
             gtsam::NonlinearFactor::shared_ptr(new This(*this)));
     }
 
@@ -341,16 +341,16 @@ private:
 
 protected:
     gtsam::StereoPoint2 measurement_;
-    boost::shared_ptr<CALIBRATION> calibration_;
+    std::shared_ptr<CALIBRATION> calibration_;
 
 public:
     StereoPoseOptFactor(const LANDMARK& point, unsigned int idx, const gtsam::StereoPoint2& measurement, const gtsam::SharedNoiseModel& model,
-                        gtsam::Key key_pose, const boost::shared_ptr<CALIBRATION>& calibration)
+                        gtsam::Key key_pose, const std::shared_ptr<CALIBRATION>& calibration)
         : Base(point, idx, model, key_pose), measurement_(measurement), calibration_(calibration) {}
     virtual ~StereoPoseOptFactor() {}
 
     gtsam::Vector evaluateError(const gtsam::Pose3& pose,
-                                boost::optional<gtsam::Matrix&> H1 = boost::none) const override {
+                                std::optional<gtsam::Matrix&> H1 = std::none) const override {
         try {
             STEREO_CAMERA camera(pose, calibration_);
             return (camera.project(this->point_, H1) - measurement_).vector();
@@ -366,7 +366,7 @@ public:
     }
 
     gtsam::NonlinearFactor::shared_ptr clone() const override {
-        return boost::static_pointer_cast<gtsam::NonlinearFactor>(
+        return std::static_pointer_cast<gtsam::NonlinearFactor>(
             gtsam::NonlinearFactor::shared_ptr(new This(*this)));
     }
 

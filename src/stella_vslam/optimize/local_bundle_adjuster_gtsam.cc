@@ -217,7 +217,7 @@ void local_bundle_adjuster_gtsam::optimize(data::map_database* map_db,
                         using monocular_calibration_type = internal_gtsam::SphericalCameraCalibration;
                         using monocular_factor_type = internal_gtsam::ProjectionFactor<gtsam::Pose3, gtsam::Point3,
                                                                                        monocular_calibration_type, internal_gtsam::SphericalCamera<monocular_calibration_type>>;
-                        boost::shared_ptr<monocular_calibration_type> monocular_calibration(new monocular_calibration_type(cam->rows_, cam->cols_));
+                        std::shared_ptr<monocular_calibration_type> monocular_calibration(new monocular_calibration_type(cam->rows_, cam->cols_));
                         graph.emplace_shared<monocular_factor_type>(
                             measurement, huber_noise_model, gtsam::Symbol('x', keyfrm->id_), gtsam::Symbol('l', id_local_lm_pair.first), monocular_calibration);
                         break;
@@ -272,13 +272,13 @@ void local_bundle_adjuster_gtsam::optimize(data::map_database* map_db,
         bool depth_is_positive = true;
 
         // filter prior factor
-        const auto& prior_factor = boost::dynamic_pointer_cast<gtsam::PriorFactor<gtsam::Pose3>>(nonlinear_factor);
+        const auto& prior_factor = std::dynamic_pointer_cast<gtsam::PriorFactor<gtsam::Pose3>>(nonlinear_factor);
         if (prior_factor != nullptr) {
             continue;
         }
 
         // filter reprojection factor
-        const auto& noise_model_factor = boost::dynamic_pointer_cast<gtsam::NoiseModelFactor2<gtsam::Pose3, gtsam::Point3>>(nonlinear_factor);
+        const auto& noise_model_factor = std::dynamic_pointer_cast<gtsam::NoiseModelFactor2<gtsam::Pose3, gtsam::Point3>>(nonlinear_factor);
         if (noise_model_factor != nullptr) {
             gtsam::Pose3 pose = result.at<gtsam::Pose3>(noise_model_factor->key1());
             gtsam::Point3 point = result.at<gtsam::Point3>(noise_model_factor->key2());
@@ -288,7 +288,7 @@ void local_bundle_adjuster_gtsam::optimize(data::map_database* map_db,
             const gtsam::Vector b = noise_model_factor->unwhitenedError(values);
             mahalanobis_distance = std::sqrt(noise_model_factor->noiseModel()->squaredMahalanobisDistance(b));
 
-            const auto& projection_factor = boost::dynamic_pointer_cast<internal_gtsam::ProjectionFactorBase<gtsam::Pose3, gtsam::Point3>>(nonlinear_factor);
+            const auto& projection_factor = std::dynamic_pointer_cast<internal_gtsam::ProjectionFactorBase<gtsam::Pose3, gtsam::Point3>>(nonlinear_factor);
             if (projection_factor) {
                 try {
                     projection_factor->project(pose, point);

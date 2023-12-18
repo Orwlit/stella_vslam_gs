@@ -31,9 +31,9 @@
                 "--vocab",  "${workspaceFolder}/vocab/FBoW_orb_vocab/orb_vocab.fbow",
                 // "--mask",
                 
-                // "--viewer", "pangolin_viewer",
+                "--viewer", "pangolin_viewer",
                 // "--frame-skip", "3",
-                // "--no-sleep",
+                "--no-sleep",
                 // "--wait-loop-ba",
             ],
             "stopAtEntry": false,
@@ -59,7 +59,7 @@
             "type": "cppdbg",
             "request": "launch",
             "environment": [],
-            "program": "${workspaceFolder}/src/stella_vslam_examples/build/run_tum_rgbd_slam",
+            "program": "${workspaceFolder}/build/run_tum_rgbd_slam",
             "args": [
                 // Dataset selection
                 "--data-dir",  
@@ -67,7 +67,7 @@
 
                 // Config
                 "--config", 
-                "${workspaceFolder}/example/tum_rgbd/TUM_RGBD_rgbd_1.yaml",
+                "${workspaceFolder}/config/tum_rgbd/TUM_RGBD_rgbd_1.yaml",
 
                 // SLAM mode
                 "--map-db-out", "${workspaceFolder}/maps/map.msg",
@@ -79,9 +79,9 @@
                 // Log config: "trace", "debug", "info", "warning", "error", "critical", "off"    
                 "--log-level", "debug",
 
-                "--vocab",  "${workspaceFolder}/vocab/FBoW_orb_vocab/orb_vocab.fbow",
+                "--vocab",  "${workspaceFolder}/vocab/orb_vocab.fbow",
                 
-                "--viewer", "pangolin_viewer",
+                // "--viewer", "pangolin_viewer",
                 // "--frame-skip", "3",
                 // "--no-sleep",
                 // "--wait-loop-ba",

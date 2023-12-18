@@ -95,12 +95,12 @@ foreach(EXECUTABLE_TARGET IN LISTS EXECUTABLE_TARGETS)
     # PangolinViewer is used on a priority basis
     if(USE_PANGOLIN_VIEWER)
         # Set macro flag
-        target_compile_definitions(${EXECUTABLE_TARGET} PRIVATE USE_PANGOLIN_VIEWER)
+        target_compile_definitions(${EXECUTABLE_TARGET} PRIVATE HAVE_PANGOLIN_VIEWER)
         # Link viewer
         target_link_libraries(${EXECUTABLE_TARGET} PRIVATE pangolin_viewer)
     elseif(USE_SOCKET_PUBLISHER)
         # Set macro flag
-        target_compile_definitions(${EXECUTABLE_TARGET} PRIVATE USE_SOCKET_PUBLISHER)
+        target_compile_definitions(${EXECUTABLE_TARGET} PRIVATE HAVE_PANGOLIN_VIEWER)
         # Link viewer
         target_link_libraries(${EXECUTABLE_TARGET} PRIVATE socket_publisher)
     endif()
